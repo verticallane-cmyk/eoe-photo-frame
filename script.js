@@ -1,3 +1,30 @@
+/* ==========================================
+   TEMPLATE CONFIGURATION
+   Change ONLY this section when you create
+   a new graphic.
+========================================== */
+
+const TEMPLATE_CONFIG = {
+  image: "assets/eoe-template.png",
+
+  photoArea: {
+    left: 51,
+    top: 43,
+    width: 30,
+
+    // Available:
+    // "circle"
+    // "square"
+    // "rounded"
+    shape: "circle"
+  }
+};
+
+
+/* ==========================================
+   App elements
+========================================== */
+
 const photoButton = document.getElementById("photoButton");
 const photoInput = document.getElementById("photoInput");
 
@@ -13,9 +40,51 @@ const generateButton = document.getElementById("generateButton");
 const downloadMessage = document.getElementById("downloadMessage");
 
 
-/* --------------------------------
+/* ==========================================
+   Apply template configuration
+========================================== */
+
+templateImage.src = TEMPLATE_CONFIG.image;
+
+photoWindow.style.left =
+  `${TEMPLATE_CONFIG.photoArea.left}%`;
+
+photoWindow.style.top =
+  `${TEMPLATE_CONFIG.photoArea.top}%`;
+
+photoWindow.style.width =
+  `${TEMPLATE_CONFIG.photoArea.width}%`;
+
+
+/* ==========================================
+   Photo shape
+========================================== */
+
+function applyPhotoShape() {
+
+  const shape =
+    TEMPLATE_CONFIG.photoArea.shape;
+
+  if (shape === "circle") {
+    photoWindow.style.borderRadius = "50%";
+  }
+
+  if (shape === "square") {
+    photoWindow.style.borderRadius = "0";
+  }
+
+  if (shape === "rounded") {
+    photoWindow.style.borderRadius = "16%";
+  }
+
+}
+
+applyPhotoShape();
+
+
+/* ==========================================
    Photo state
--------------------------------- */
+========================================== */
 
 let imageLoaded = false;
 
@@ -26,9 +95,9 @@ let photoX = 0;
 let photoY = 0;
 
 
-/* --------------------------------
+/* ==========================================
    Drag state
--------------------------------- */
+========================================== */
 
 let isDragging = false;
 
@@ -39,18 +108,18 @@ let photoStartX = 0;
 let photoStartY = 0;
 
 
-/* --------------------------------
+/* ==========================================
    Open camera / file picker
--------------------------------- */
+========================================== */
 
 photoButton.addEventListener("click", () => {
   photoInput.click();
 });
 
 
-/* --------------------------------
+/* ==========================================
    Photo selected
--------------------------------- */
+========================================== */
 
 photoInput.addEventListener("change", (event) => {
 
@@ -60,17 +129,21 @@ photoInput.addEventListener("change", (event) => {
     return;
   }
 
-  const imageURL = URL.createObjectURL(file);
+  const imageURL =
+    URL.createObjectURL(file);
 
-  photoPlaceholder.style.display = "none";
+  photoPlaceholder.style.display =
+    "none";
 
   userPhoto.onload = () => {
 
     imageLoaded = true;
 
-    userPhoto.style.display = "block";
+    userPhoto.style.display =
+      "block";
 
-    generateButton.disabled = false;
+    generateButton.disabled =
+      false;
 
     setupPhoto();
 
@@ -82,22 +155,30 @@ photoInput.addEventListener("change", (event) => {
 
     imageLoaded = false;
 
-    userPhoto.style.display = "none";
+    userPhoto.style.display =
+      "none";
 
-    photoPlaceholder.style.display = "flex";
+    photoPlaceholder.style.display =
+      "flex";
 
-    generateButton.disabled = true;
+    generateButton.disabled =
+      true;
+
+    console.error(
+      "Unable to load the selected image."
+    );
 
   };
 
-  userPhoto.src = imageURL;
+  userPhoto.src =
+    imageURL;
 
 });
 
 
-/* --------------------------------
-   Setup photo
--------------------------------- */
+/* ==========================================
+   Initial photo setup
+========================================== */
 
 function setupPhoto() {
 
@@ -134,9 +215,9 @@ function setupPhoto() {
 }
 
 
-/* --------------------------------
-   Update photo position
--------------------------------- */
+/* ==========================================
+   Update photo
+========================================== */
 
 function updatePhoto() {
 
@@ -158,9 +239,9 @@ function updatePhoto() {
 }
 
 
-/* --------------------------------
+/* ==========================================
    Zoom
--------------------------------- */
+========================================== */
 
 zoomSlider.addEventListener("input", () => {
 
@@ -172,9 +253,9 @@ zoomSlider.addEventListener("input", () => {
 });
 
 
-/* --------------------------------
+/* ==========================================
    Start dragging
--------------------------------- */
+========================================== */
 
 photoWindow.addEventListener(
   "pointerdown",
@@ -209,9 +290,9 @@ photoWindow.addEventListener(
 );
 
 
-/* --------------------------------
-   Drag
--------------------------------- */
+/* ==========================================
+   Dragging
+========================================== */
 
 photoWindow.addEventListener(
   "pointermove",
@@ -222,16 +303,20 @@ photoWindow.addEventListener(
     }
 
     const deltaX =
-      event.clientX - dragStartX;
+      event.clientX -
+      dragStartX;
 
     const deltaY =
-      event.clientY - dragStartY;
+      event.clientY -
+      dragStartY;
 
     photoX =
-      photoStartX + deltaX;
+      photoStartX +
+      deltaX;
 
     photoY =
-      photoStartY + deltaY;
+      photoStartY +
+      deltaY;
 
     updatePhoto();
 
@@ -239,9 +324,9 @@ photoWindow.addEventListener(
 );
 
 
-/* --------------------------------
+/* ==========================================
    Stop dragging
--------------------------------- */
+========================================== */
 
 photoWindow.addEventListener(
   "pointerup",
@@ -268,9 +353,9 @@ photoWindow.addEventListener(
 );
 
 
-/* --------------------------------
+/* ==========================================
    Pointer cancelled
--------------------------------- */
+========================================== */
 
 photoWindow.addEventListener(
   "pointercancel",
@@ -285,9 +370,9 @@ photoWindow.addEventListener(
 );
 
 
-/* --------------------------------
+/* ==========================================
    Generate final PNG
--------------------------------- */
+========================================== */
 
 generateButton.addEventListener(
   "click",
@@ -302,19 +387,8 @@ generateButton.addEventListener(
 
     try {
 
-      /*
-        Use the already-loaded template
-        image rather than loading it again.
-      */
-
       const template =
         templateImage;
-
-
-      /*
-        Create canvas at the
-        original template dimensions.
-      */
 
       const canvas =
         document.createElement("canvas");
@@ -330,7 +404,7 @@ generateButton.addEventListener(
 
 
       /*
-        Draw background artwork.
+        Draw artwork
       */
 
       ctx.drawImage(
@@ -341,8 +415,8 @@ generateButton.addEventListener(
 
 
       /*
-        Determine how the displayed
-        artwork maps to its original size.
+        Calculate display → original
+        template scaling
       */
 
       const templateRect =
@@ -351,50 +425,51 @@ generateButton.addEventListener(
       const windowRect =
         photoWindow.getBoundingClientRect();
 
-
       const scaleFactor =
         template.naturalWidth /
         templateRect.width;
 
 
       /*
-        Circle position in original
-        template pixels.
+        Photo area position
       */
 
-      const circleX =
+      const photoAreaX =
         (windowRect.left -
           templateRect.left) *
         scaleFactor;
 
-      const circleY =
+      const photoAreaY =
         (windowRect.top -
           templateRect.top) *
         scaleFactor;
 
-      const circleSize =
+      const photoAreaWidth =
         windowRect.width *
         scaleFactor;
 
+      const photoAreaHeight =
+        windowRect.height *
+        scaleFactor;
 
-      const circleCenterX =
-        circleX +
-        circleSize / 2;
 
-      const circleCenterY =
-        circleY +
-        circleSize / 2;
+      const photoAreaCenterX =
+        photoAreaX +
+        photoAreaWidth / 2;
+
+      const photoAreaCenterY =
+        photoAreaY +
+        photoAreaHeight / 2;
 
 
       /*
-        Calculate final photo size.
+        Photo size
       */
 
       const finalScale =
         baseScale *
         zoom *
         scaleFactor;
-
 
       const finalPhotoWidth =
         userPhoto.naturalWidth *
@@ -404,11 +479,6 @@ generateButton.addEventListener(
         userPhoto.naturalHeight *
         finalScale;
 
-
-      /*
-        Convert user's drag movement
-        to original template pixels.
-      */
 
       const translatedX =
         photoX *
@@ -420,37 +490,66 @@ generateButton.addEventListener(
 
 
       const photoDrawX =
-        circleCenterX -
+        photoAreaCenterX -
         finalPhotoWidth / 2 +
         translatedX;
 
       const photoDrawY =
-        circleCenterY -
+        photoAreaCenterY -
         finalPhotoHeight / 2 +
         translatedY;
 
 
       /*
-        Clip to circle.
+        Clip the photo
       */
 
       ctx.save();
 
       ctx.beginPath();
 
-      ctx.arc(
-        circleCenterX,
-        circleCenterY,
-        circleSize / 2,
-        0,
-        Math.PI * 2
-      );
+      const shape =
+        TEMPLATE_CONFIG.photoArea.shape;
+
+      if (shape === "circle") {
+
+        ctx.arc(
+          photoAreaCenterX,
+          photoAreaCenterY,
+          photoAreaWidth / 2,
+          0,
+          Math.PI * 2
+        );
+
+      } else if (shape === "square") {
+
+        ctx.rect(
+          photoAreaX,
+          photoAreaY,
+          photoAreaWidth,
+          photoAreaHeight
+        );
+
+      } else if (shape === "rounded") {
+
+        const radius =
+          photoAreaWidth * 0.16;
+
+        ctx.roundRect(
+          photoAreaX,
+          photoAreaY,
+          photoAreaWidth,
+          photoAreaHeight,
+          radius
+        );
+
+      }
 
       ctx.clip();
 
 
       /*
-        Draw user photo.
+        Draw user's photo
       */
 
       ctx.drawImage(
@@ -465,7 +564,7 @@ generateButton.addEventListener(
 
 
       /*
-        Convert canvas to PNG.
+        Create PNG
       */
 
       canvas.toBlob(
@@ -482,7 +581,6 @@ generateButton.addEventListener(
 
           const downloadURL =
             URL.createObjectURL(blob);
-
 
           const link =
             document.createElement("a");
@@ -502,7 +600,6 @@ generateButton.addEventListener(
           URL.revokeObjectURL(
             downloadURL
           );
-
 
           downloadMessage.textContent =
             "Your graphic is ready.";
