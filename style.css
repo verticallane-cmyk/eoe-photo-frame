@@ -60,13 +60,8 @@ button:disabled {
 .photo-window {
   position: absolute;
 
-  left: 51%;
-  top: 43%;
-  width: 30%;
-
   aspect-ratio: 1 / 1;
 
-  border-radius: 50%;
   overflow: hidden;
 
   touch-action: none;
