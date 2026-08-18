@@ -1,0 +1,163 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f1eb;
+  color: #222;
+}
+
+.app {
+  width: min(92%, 500px);
+  margin: 40px auto;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 8px;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+
+button {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 30px;
+  background: #222;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.editor {
+  position: relative;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.template-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Fixed circular photo area */
+
+.photo-window {
+  position: absolute;
+
+  left: 51%;
+  top: 43%;
+  width: 30%;
+
+  aspect-ratio: 1 / 1;
+
+  border-radius: 50%;
+  overflow: hidden;
+
+  touch-action: none;
+  cursor: grab;
+}
+
+/* Placeholder */
+
+.photo-placeholder {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+
+  background: rgba(0, 0, 0, 0.12);
+
+  pointer-events: none;
+}
+
+/* User photo */
+
+#userPhoto {
+  display: none;
+
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: auto;
+  height: auto;
+
+  max-width: none;
+  max-height: none;
+
+  transform-origin: center center;
+
+  user-select: none;
+  -webkit-user-drag: none;
+
+  pointer-events: none;
+
+  will-change: transform;
+}
+
+/* Zoom */
+
+.zoom-control {
+  width: 100%;
+  max-width: 320px;
+  margin: 20px auto 0;
+}
+
+.zoom-control label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #555;
+}
+
+.zoom-control input {
+  width: 100%;
+}
+
+/* Helper */
+
+.helper-text {
+  margin-top: 10px;
+  margin-bottom: 18px;
+  font-size: 13px;
+  color: #666;
+}
+
+/* Generate */
+
+.generate-button {
+  margin-top: 4px;
+  background: #222;
+}
+
+.download-message {
+  min-height: 20px;
+  margin-top: 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  color: #555;
+}

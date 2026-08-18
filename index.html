@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+  >
+
+  <title>EoE Photo Frame</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <main class="app">
+
+    <h1>Soak in Ecstasy of Enlightenment</h1>
+
+    <p>
+      Create your personalised EoE graphic for Jaipur
+    </p>
+
+    <button id="photoButton">
+      Add Your Photo
+    </button>
+
+    <input
+      type="file"
+      id="photoInput"
+      accept="image/*"
+      capture="user"
+      hidden
+    >
+
+    <div class="editor">
+
+      <!-- Your original artwork -->
+      <img
+        src="assets/eoe-template.png"
+        alt="EoE Jaipur graphic"
+        class="template-image"
+        id="templateImage"
+      >
+
+      <!-- Circular photo area -->
+      <div
+        class="photo-window"
+        id="photoWindow"
+      >
+
+        <div
+          class="photo-placeholder"
+          id="photoPlaceholder"
+        >
+          Add Your Photo
+        </div>
+
+        <img
+          id="userPhoto"
+          alt="Your photo"
+        >
+
+      </div>
+
+    </div>
+
+    <div class="zoom-control">
+
+      <label for="zoomSlider">
+        Adjust photo
+      </label>
+
+      <input
+        type="range"
+        id="zoomSlider"
+        min="1"
+        max="3"
+        step="0.01"
+        value="1"
+      >
+
+    </div>
+
+    <p class="helper-text">
+      Drag your photo to adjust
+    </p>
+
+    <button
+      id="generateButton"
+      class="generate-button"
+      disabled
+    >
+      Generate My Graphic
+    </button>
+
+    <p
+      id="downloadMessage"
+      class="download-message"
+    ></p>
+
+  </main>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
