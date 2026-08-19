@@ -17,19 +17,48 @@
 
   <main class="app">
 
-    <h1>Soak in Ecstasy of Enlightenment</h1>
-
-    <p>
-      Create your personalised graphic for the event with Sadhguru on 10 January 2027, Jaipur.
-    </p>
+<div class="header-banner">
+  <img
+    src="assets/header.png"
+    alt="Soak in Ecstasy of Enlightenment with Sadhguru — Create Your Own Photo Frame"
+  >
+</div>
 
     <button id="photoButton">
-      Add Your Photo
-    </button>
+  Add Your Photo
+</button>
 
-    <input
+<div
+  class="photo-choice"
+  id="photoChoice"
+  hidden
+>
+  <button
+    type="button"
+    id="cameraButton"
+  >
+    Take a Photo
+  </button>
+
+  <button
+    type="button"
+    id="galleryButton"
+  >
+    Choose from Gallery
+  </button>
+</div>
+
+<input
   type="file"
-  id="photoInput"
+  id="cameraInput"
+  accept="image/*"
+  capture="user"
+  hidden
+>
+
+<input
+  type="file"
+  id="galleryInput"
   accept="image/*"
   hidden
 >
