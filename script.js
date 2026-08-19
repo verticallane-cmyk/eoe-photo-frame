@@ -25,26 +25,52 @@ const TEMPLATE_CONFIG = {
    App elements
 ========================================== */
 
-const photoButton = document.getElementById("photoButton");
-const photoInput = document.getElementById("photoInput");
+const photoButton =
+  document.getElementById("photoButton");
 
-const photoWindow = document.getElementById("photoWindow");
-const photoPlaceholder = document.getElementById("photoPlaceholder");
-const userPhoto = document.getElementById("userPhoto");
+const photoChoice =
+  document.getElementById("photoChoice");
 
-const zoomSlider = document.getElementById("zoomSlider");
+const cameraButton =
+  document.getElementById("cameraButton");
 
-const templateImage = document.getElementById("templateImage");
+const galleryButton =
+  document.getElementById("galleryButton");
 
-const generateButton = document.getElementById("generateButton");
-const downloadMessage = document.getElementById("downloadMessage");
+const cameraInput =
+  document.getElementById("cameraInput");
+
+const galleryInput =
+  document.getElementById("galleryInput");
+
+const photoWindow =
+  document.getElementById("photoWindow");
+
+const photoPlaceholder =
+  document.getElementById("photoPlaceholder");
+
+const userPhoto =
+  document.getElementById("userPhoto");
+
+const zoomSlider =
+  document.getElementById("zoomSlider");
+
+const templateImage =
+  document.getElementById("templateImage");
+
+const generateButton =
+  document.getElementById("generateButton");
+
+const downloadMessage =
+  document.getElementById("downloadMessage");
 
 
 /* ==========================================
    Apply template configuration
 ========================================== */
 
-templateImage.src = TEMPLATE_CONFIG.image;
+templateImage.src =
+  TEMPLATE_CONFIG.image;
 
 photoWindow.style.left =
   `${TEMPLATE_CONFIG.photoArea.left}%`;
@@ -57,7 +83,7 @@ photoWindow.style.width =
 
 
 /* ==========================================
-   Photo shape
+   Apply photo shape
 ========================================== */
 
 function applyPhotoShape() {
@@ -109,35 +135,77 @@ let photoStartY = 0;
 
 
 /* ==========================================
-   Open camera / file picker
+   Open photo selection menu
 ========================================== */
 
 photoButton.addEventListener("click", () => {
-  photoInput.click();
+
+  photoChoice.hidden =
+    !photoChoice.hidden;
+
 });
 
 
 /* ==========================================
-   Photo selected
+   Open camera
 ========================================== */
 
-photoInput.addEventListener("change", (event) => {
+cameraButton.addEventListener("click", () => {
 
-  const file = event.target.files[0];
+  cameraInput.click();
+
+});
+
+
+/* ==========================================
+   Open gallery
+========================================== */
+
+galleryButton.addEventListener("click", () => {
+
+  galleryInput.click();
+
+});
+
+
+/* ==========================================
+   Handle selected photo
+========================================== */
+
+function handlePhotoSelection(event) {
+
+  const file =
+    event.target.files[0];
 
   if (!file) {
     return;
   }
 
+
+  /* Hide the choice menu */
+
+  photoChoice.hidden =
+    true;
+
+
+  /* Create temporary browser URL */
+
   const imageURL =
     URL.createObjectURL(file);
+
+
+  /* Hide placeholder */
 
   photoPlaceholder.style.display =
     "none";
 
+
+  /* Load user's image */
+
   userPhoto.onload = () => {
 
-    imageLoaded = true;
+    imageLoaded =
+      true;
 
     userPhoto.style.display =
       "block";
@@ -151,9 +219,13 @@ photoInput.addEventListener("change", (event) => {
 
   };
 
+
+  /* Handle failed image */
+
   userPhoto.onerror = () => {
 
-    imageLoaded = false;
+    imageLoaded =
+      false;
 
     userPhoto.style.display =
       "none";
@@ -164,16 +236,34 @@ photoInput.addEventListener("change", (event) => {
     generateButton.disabled =
       true;
 
+    URL.revokeObjectURL(imageURL);
+
     console.error(
       "Unable to load the selected image."
     );
 
   };
 
+
   userPhoto.src =
     imageURL;
 
-});
+}
+
+
+/* ==========================================
+   Connect both inputs
+========================================== */
+
+cameraInput.addEventListener(
+  "change",
+  handlePhotoSelection
+);
+
+galleryInput.addEventListener(
+  "change",
+  handlePhotoSelection
+);
 
 
 /* ==========================================
@@ -194,21 +284,41 @@ function setupPhoto() {
   const imageHeight =
     userPhoto.naturalHeight;
 
+
   const scaleX =
-    viewportWidth / imageWidth;
+    viewportWidth /
+    imageWidth;
 
   const scaleY =
-    viewportHeight / imageHeight;
+    viewportHeight /
+    imageHeight;
+
+
+  /*
+    Make sure the image completely
+    covers the photo area.
+  */
 
   baseScale =
-    Math.max(scaleX, scaleY);
+    Math.max(
+      scaleX,
+      scaleY
+    );
 
-  zoom = 1;
 
-  photoX = 0;
-  photoY = 0;
+  zoom =
+    1;
 
-  zoomSlider.value = 1;
+  photoX =
+    0;
+
+  photoY =
+    0;
+
+
+  zoomSlider.value =
+    1;
+
 
   updatePhoto();
 
@@ -225,8 +335,10 @@ function updatePhoto() {
     return;
   }
 
+
   const scale =
     baseScale * zoom;
+
 
   userPhoto.style.transform =
     `
@@ -236,6 +348,7 @@ function updatePhoto() {
       )
       scale(${scale})
     `;
+
 }
 
 
@@ -243,14 +356,17 @@ function updatePhoto() {
    Zoom
 ========================================== */
 
-zoomSlider.addEventListener("input", () => {
+zoomSlider.addEventListener(
+  "input",
+  () => {
 
-  zoom =
-    Number(zoomSlider.value);
+    zoom =
+      Number(zoomSlider.value);
 
-  updatePhoto();
+    updatePhoto();
 
-});
+  }
+);
 
 
 /* ==========================================
@@ -265,7 +381,10 @@ photoWindow.addEventListener(
       return;
     }
 
-    isDragging = true;
+
+    isDragging =
+      true;
+
 
     dragStartX =
       event.clientX;
@@ -273,15 +392,18 @@ photoWindow.addEventListener(
     dragStartY =
       event.clientY;
 
+
     photoStartX =
       photoX;
 
     photoStartY =
       photoY;
 
+
     photoWindow.setPointerCapture(
       event.pointerId
     );
+
 
     photoWindow.style.cursor =
       "grabbing";
@@ -302,6 +424,7 @@ photoWindow.addEventListener(
       return;
     }
 
+
     const deltaX =
       event.clientX -
       dragStartX;
@@ -310,6 +433,7 @@ photoWindow.addEventListener(
       event.clientY -
       dragStartY;
 
+
     photoX =
       photoStartX +
       deltaX;
@@ -317,6 +441,7 @@ photoWindow.addEventListener(
     photoY =
       photoStartY +
       deltaY;
+
 
     updatePhoto();
 
@@ -332,10 +457,13 @@ photoWindow.addEventListener(
   "pointerup",
   (event) => {
 
-    isDragging = false;
+    isDragging =
+      false;
+
 
     photoWindow.style.cursor =
       "grab";
+
 
     if (
       photoWindow.hasPointerCapture(
@@ -361,7 +489,8 @@ photoWindow.addEventListener(
   "pointercancel",
   () => {
 
-    isDragging = false;
+    isDragging =
+      false;
 
     photoWindow.style.cursor =
       "grab";
@@ -382,16 +511,22 @@ generateButton.addEventListener(
       return;
     }
 
+
     downloadMessage.textContent =
       "Creating your graphic...";
+
 
     try {
 
       const template =
         templateImage;
 
+
+      /* Create canvas at original size */
+
       const canvas =
         document.createElement("canvas");
+
 
       canvas.width =
         template.naturalWidth;
@@ -399,13 +534,12 @@ generateButton.addEventListener(
       canvas.height =
         template.naturalHeight;
 
+
       const ctx =
         canvas.getContext("2d");
 
 
-      /*
-        Draw artwork
-      */
+      /* Draw original template */
 
       ctx.drawImage(
         template,
@@ -414,10 +548,7 @@ generateButton.addEventListener(
       );
 
 
-      /*
-        Calculate display → original
-        template scaling
-      */
+      /* Get displayed dimensions */
 
       const templateRect =
         template.getBoundingClientRect();
@@ -425,28 +556,37 @@ generateButton.addEventListener(
       const windowRect =
         photoWindow.getBoundingClientRect();
 
+
+      /*
+        Convert displayed pixels
+        to original template pixels.
+      */
+
       const scaleFactor =
         template.naturalWidth /
         templateRect.width;
 
 
-      /*
-        Photo area position
-      */
+      /* Photo area position */
 
       const photoAreaX =
-        (windowRect.left -
-          templateRect.left) *
-        scaleFactor;
+        (
+          windowRect.left -
+          templateRect.left
+        ) * scaleFactor;
+
 
       const photoAreaY =
-        (windowRect.top -
-          templateRect.top) *
-        scaleFactor;
+        (
+          windowRect.top -
+          templateRect.top
+        ) * scaleFactor;
+
 
       const photoAreaWidth =
         windowRect.width *
         scaleFactor;
+
 
       const photoAreaHeight =
         windowRect.height *
@@ -457,32 +597,36 @@ generateButton.addEventListener(
         photoAreaX +
         photoAreaWidth / 2;
 
+
       const photoAreaCenterY =
         photoAreaY +
         photoAreaHeight / 2;
 
 
-      /*
-        Photo size
-      */
+      /* Calculate final photo scale */
 
       const finalScale =
         baseScale *
         zoom *
         scaleFactor;
 
+
       const finalPhotoWidth =
         userPhoto.naturalWidth *
         finalScale;
+
 
       const finalPhotoHeight =
         userPhoto.naturalHeight *
         finalScale;
 
 
+      /* Convert drag position */
+
       const translatedX =
         photoX *
         scaleFactor;
+
 
       const translatedY =
         photoY *
@@ -494,22 +638,23 @@ generateButton.addEventListener(
         finalPhotoWidth / 2 +
         translatedX;
 
+
       const photoDrawY =
         photoAreaCenterY -
         finalPhotoHeight / 2 +
         translatedY;
 
 
-      /*
-        Clip the photo
-      */
+      /* Clip photo to configured shape */
 
       ctx.save();
 
       ctx.beginPath();
 
+
       const shape =
         TEMPLATE_CONFIG.photoArea.shape;
+
 
       if (shape === "circle") {
 
@@ -521,7 +666,10 @@ generateButton.addEventListener(
           Math.PI * 2
         );
 
-      } else if (shape === "square") {
+      }
+
+
+      else if (shape === "square") {
 
         ctx.rect(
           photoAreaX,
@@ -530,7 +678,10 @@ generateButton.addEventListener(
           photoAreaHeight
         );
 
-      } else if (shape === "rounded") {
+      }
+
+
+      else if (shape === "rounded") {
 
         const radius =
           photoAreaWidth * 0.16;
@@ -545,12 +696,11 @@ generateButton.addEventListener(
 
       }
 
+
       ctx.clip();
 
 
-      /*
-        Draw user's photo
-      */
+      /* Draw user's photo */
 
       ctx.drawImage(
         userPhoto,
@@ -560,12 +710,11 @@ generateButton.addEventListener(
         finalPhotoHeight
       );
 
+
       ctx.restore();
 
 
-      /*
-        Create PNG
-      */
+      /* Create PNG */
 
       canvas.toBlob(
         (blob) => {
@@ -579,27 +728,40 @@ generateButton.addEventListener(
 
           }
 
+
           const downloadURL =
-            URL.createObjectURL(blob);
+            URL.createObjectURL(
+              blob
+            );
+
 
           const link =
             document.createElement("a");
 
+
           link.href =
             downloadURL;
+
 
           link.download =
             "eoe-jaipur-my-photo.png";
 
-          document.body.appendChild(link);
+
+          document.body.appendChild(
+            link
+          );
+
 
           link.click();
 
+
           link.remove();
+
 
           URL.revokeObjectURL(
             downloadURL
           );
+
 
           downloadMessage.textContent =
             "Your graphic is ready.";
@@ -608,12 +770,16 @@ generateButton.addEventListener(
         "image/png"
       );
 
-    } catch (error) {
+    }
+
+
+    catch (error) {
 
       console.error(
         "Image generation error:",
         error
       );
+
 
       downloadMessage.textContent =
         "Something went wrong. Please try again.";
