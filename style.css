@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -11,8 +15,7 @@ body {
 
 .app {
   width: min(92%, 500px);
-  margin: 40px auto;
-  text-align: center;
+  margin: 0 auto;
 }
 
 h1 {
@@ -23,6 +26,27 @@ p {
   margin-top: 0;
   margin-bottom: 24px;
 }
+
+/* ==========================================
+   Header banner
+========================================== */
+
+.header-banner {
+  width: 100%;
+  margin: 0 auto 24px;
+}
+
+.header-banner img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+}
+
+
+/* ==========================================
+   Main buttons
+========================================== */
 
 button {
   padding: 14px 24px;
@@ -43,6 +67,46 @@ button:disabled {
   cursor: not-allowed;
 }
 
+
+/* ==========================================
+   Photo selection menu
+========================================== */
+
+.photo-choice {
+  width: min(100%, 320px);
+  margin: 12px auto 0;
+  padding: 12px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 14px;
+}
+
+.photo-choice button {
+  width: 100%;
+  margin: 0;
+
+  background: #f3f1ee;
+  color: #222;
+
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+.photo-choice button:first-child {
+  background: #222;
+  color: white;
+}
+
+
+/* ==========================================
+   Artwork editor
+========================================== */
+
 .editor {
   position: relative;
   width: 100%;
@@ -55,10 +119,18 @@ button:disabled {
   height: auto;
 }
 
-/* Fixed circular photo area */
+
+/* ==========================================
+   Photo window
+========================================== */
 
 .photo-window {
   position: absolute;
+
+  /*
+    Position and width are controlled
+    by TEMPLATE_CONFIG in script.js.
+  */
 
   aspect-ratio: 1 / 1;
 
@@ -68,7 +140,10 @@ button:disabled {
   cursor: grab;
 }
 
-/* Placeholder */
+
+/* ==========================================
+   Placeholder before photo upload
+========================================== */
 
 .photo-placeholder {
   position: absolute;
@@ -88,7 +163,10 @@ button:disabled {
   pointer-events: none;
 }
 
-/* User photo */
+
+/* ==========================================
+   User photo
+========================================== */
 
 #userPhoto {
   display: none;
@@ -114,7 +192,10 @@ button:disabled {
   will-change: transform;
 }
 
-/* Zoom */
+
+/* ==========================================
+   Zoom control
+========================================== */
 
 .zoom-control {
   width: 100%;
@@ -125,6 +206,7 @@ button:disabled {
 .zoom-control label {
   display: block;
   margin-bottom: 8px;
+
   font-size: 14px;
   color: #555;
 }
@@ -133,26 +215,71 @@ button:disabled {
   width: 100%;
 }
 
-/* Helper */
+
+/* ==========================================
+   Helper text
+========================================== */
 
 .helper-text {
   margin-top: 10px;
   margin-bottom: 18px;
+
   font-size: 13px;
   color: #666;
 }
 
-/* Generate */
+
+/* ==========================================
+   Generate button
+========================================== */
 
 .generate-button {
   margin-top: 4px;
   background: #222;
 }
 
+
+/* ==========================================
+   Download / status message
+========================================== */
+
 .download-message {
   min-height: 20px;
+
   margin-top: 12px;
   margin-bottom: 0;
+
   font-size: 14px;
   color: #555;
+}
+
+
+/* ==========================================
+   Mobile adjustments
+========================================== */
+
+@media (max-width: 600px) {
+
+.app {
+  width: 94%;
+  margin: 0 auto;
+}
+
+  h1 {
+    font-size: 22px;
+    line-height: 1.2;
+  }
+
+  p {
+    font-size: 14px;
+  }
+
+  button {
+    font-size: 15px;
+  }
+
+  .photo-choice {
+    max-width: 280px;
+  }
+
 }
