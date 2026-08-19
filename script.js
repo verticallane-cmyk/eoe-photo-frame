@@ -9,7 +9,7 @@ const TEMPLATE_CONFIG = {
 
   photoArea: {
     left: 51,
-    top: 43,
+    top: 41,
     width: 30,
 
     // Available:
