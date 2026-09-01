@@ -8,9 +8,9 @@ const TEMPLATE_CONFIG = {
   image: "assets/eoe-template.png",
 
   photoArea: {
-    left: 51,
-    top: 41,
-    width: 30,
+    left: 10.7,
+    top: 38,
+    width: 37,
 
     // Available:
     // "circle"
