@@ -882,7 +882,7 @@ shareButton.addEventListener(
             "Soak in Ecstasy of Enlightenment with Sadhguru",
 
           text:
-            "I am going to Jaipur on 10 Jan 2027 to be a part of Soak in Ecstasy of Enlightenment with Sadhguru"
+            "✨ I am going to Jaipur on 10 Jan 2027 to be a part of Soak in Ecstasy of Enlightenment with Sadhguru! 🙏🌸"
         });
 
 
@@ -906,7 +906,7 @@ shareButton.addEventListener(
             "Soak in Ecstasy of Enlightenment with Sadhguru",
 
           text:
-            "I am going to Jaipur on 10 Jan 2027 to be a part of Soak in Ecstasy of Enlightenment with Sadhguru",
+            "✨ I am going to Jaipur on 10 Jan 2027 to be a part of Soak in Ecstasy of Enlightenment with Sadhguru! 🙏🌸",
 
           url:
             window.location.href
