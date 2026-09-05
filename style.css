@@ -289,3 +289,20 @@ button:disabled {
   }
 
 }
+
+
+/* ==========================================
+   Share button
+========================================== */
+
+.share-button {
+  margin-top: 10px;
+  background: transparent;
+  color: #222;
+  border: 1px solid #222;
+}
+
+.share-button:hover {
+  background: #222;
+  color: white;
+}
