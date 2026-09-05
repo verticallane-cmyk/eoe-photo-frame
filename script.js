@@ -1,7 +1,5 @@
 /* ==========================================
    TEMPLATE CONFIGURATION
-   Change ONLY this section when you create
-   a new graphic.
 ========================================== */
 
 const TEMPLATE_CONFIG = {
@@ -12,7 +10,6 @@ const TEMPLATE_CONFIG = {
     top: 38,
     width: 37,
 
-    // Available:
     // "circle"
     // "square"
     // "rounded"
@@ -60,6 +57,9 @@ const templateImage =
 
 const generateButton =
   document.getElementById("generateButton");
+
+const shareButton =
+  document.getElementById("shareButton");
 
 const downloadMessage =
   document.getElementById("downloadMessage");
@@ -119,6 +119,13 @@ let zoom = 1;
 
 let photoX = 0;
 let photoY = 0;
+
+
+/* ==========================================
+   Generated image
+========================================== */
+
+let generatedBlob = null;
 
 
 /* ==========================================
@@ -182,25 +189,23 @@ function handlePhotoSelection(event) {
   }
 
 
-  /* Hide the choice menu */
-
   photoChoice.hidden =
     true;
 
+  generatedBlob =
+    null;
 
-  /* Create temporary browser URL */
+  shareButton.disabled =
+    true;
+
 
   const imageURL =
     URL.createObjectURL(file);
 
 
-  /* Hide placeholder */
-
   photoPlaceholder.style.display =
     "none";
 
-
-  /* Load user's image */
 
   userPhoto.onload = () => {
 
@@ -215,12 +220,12 @@ function handlePhotoSelection(event) {
 
     setupPhoto();
 
-    URL.revokeObjectURL(imageURL);
+    URL.revokeObjectURL(
+      imageURL
+    );
 
   };
 
-
-  /* Handle failed image */
 
   userPhoto.onerror = () => {
 
@@ -236,10 +241,11 @@ function handlePhotoSelection(event) {
     generateButton.disabled =
       true;
 
-    URL.revokeObjectURL(imageURL);
+    shareButton.disabled =
+      true;
 
-    console.error(
-      "Unable to load the selected image."
+    URL.revokeObjectURL(
+      imageURL
     );
 
   };
@@ -293,11 +299,6 @@ function setupPhoto() {
     viewportHeight /
     imageHeight;
 
-
-  /*
-    Make sure the image completely
-    covers the photo area.
-  */
 
   baseScale =
     Math.max(
@@ -361,7 +362,9 @@ zoomSlider.addEventListener(
   () => {
 
     zoom =
-      Number(zoomSlider.value);
+      Number(
+        zoomSlider.value
+      );
 
     updatePhoto();
 
@@ -516,17 +519,24 @@ generateButton.addEventListener(
       "Creating your graphic...";
 
 
+    shareButton.disabled =
+      true;
+
+
     try {
 
       const template =
         templateImage;
 
 
-      /* Create canvas at original size */
-
       const canvas =
         document.createElement("canvas");
 
+
+      /*
+        Preserve original artwork
+        dimensions.
+      */
 
       canvas.width =
         template.naturalWidth;
@@ -539,7 +549,9 @@ generateButton.addEventListener(
         canvas.getContext("2d");
 
 
-      /* Draw original template */
+      /*
+        Draw template.
+      */
 
       ctx.drawImage(
         template,
@@ -548,7 +560,9 @@ generateButton.addEventListener(
       );
 
 
-      /* Get displayed dimensions */
+      /*
+        Displayed dimensions.
+      */
 
       const templateRect =
         template.getBoundingClientRect();
@@ -558,8 +572,8 @@ generateButton.addEventListener(
 
 
       /*
-        Convert displayed pixels
-        to original template pixels.
+        Convert screen pixels into
+        original artwork pixels.
       */
 
       const scaleFactor =
@@ -567,20 +581,24 @@ generateButton.addEventListener(
         templateRect.width;
 
 
-      /* Photo area position */
+      /*
+        Photo area.
+      */
 
       const photoAreaX =
         (
           windowRect.left -
           templateRect.left
-        ) * scaleFactor;
+        ) *
+        scaleFactor;
 
 
       const photoAreaY =
         (
           windowRect.top -
           templateRect.top
-        ) * scaleFactor;
+        ) *
+        scaleFactor;
 
 
       const photoAreaWidth =
@@ -603,7 +621,9 @@ generateButton.addEventListener(
         photoAreaHeight / 2;
 
 
-      /* Calculate final photo scale */
+      /*
+        Calculate photo scale.
+      */
 
       const finalScale =
         baseScale *
@@ -621,7 +641,9 @@ generateButton.addEventListener(
         finalScale;
 
 
-      /* Convert drag position */
+      /*
+        Convert drag movement.
+      */
 
       const translatedX =
         photoX *
@@ -645,7 +667,9 @@ generateButton.addEventListener(
         translatedY;
 
 
-      /* Clip photo to configured shape */
+      /*
+        Clip photo to configured shape.
+      */
 
       ctx.save();
 
@@ -684,7 +708,9 @@ generateButton.addEventListener(
       else if (shape === "rounded") {
 
         const radius =
-          photoAreaWidth * 0.16;
+          photoAreaWidth *
+          0.16;
+
 
         ctx.roundRect(
           photoAreaX,
@@ -700,7 +726,9 @@ generateButton.addEventListener(
       ctx.clip();
 
 
-      /* Draw user's photo */
+      /*
+        Draw user's photo.
+      */
 
       ctx.drawImage(
         userPhoto,
@@ -714,10 +742,12 @@ generateButton.addEventListener(
       ctx.restore();
 
 
-      /* Create PNG */
+      /*
+        Convert canvas to PNG blob.
+      */
 
       canvas.toBlob(
-        (blob) => {
+        async (blob) => {
 
           if (!blob) {
 
@@ -728,6 +758,14 @@ generateButton.addEventListener(
 
           }
 
+
+          generatedBlob =
+            blob;
+
+
+          /*
+            Download automatically.
+          */
 
           const downloadURL =
             URL.createObjectURL(
@@ -763,6 +801,14 @@ generateButton.addEventListener(
           );
 
 
+          /*
+            Enable Share.
+          */
+
+          shareButton.disabled =
+            false;
+
+
           downloadMessage.textContent =
             "Your graphic is ready.";
 
@@ -785,6 +831,136 @@ generateButton.addEventListener(
         "Something went wrong. Please try again.";
 
     }
+
+  }
+);
+
+
+/* ==========================================
+   Share generated graphic
+========================================== */
+
+shareButton.addEventListener(
+  "click",
+  async () => {
+
+    if (!generatedBlob) {
+      return;
+    }
+
+
+    /*
+      Convert the generated PNG into
+      a shareable file.
+    */
+
+    const file =
+      new File(
+        [generatedBlob],
+        "eoe-jaipur-my-photo.png",
+        {
+          type: "image/png"
+        }
+      );
+
+
+    /*
+      Use the native phone share sheet
+      when the browser supports sharing
+      image files.
+    */
+
+    if (
+      navigator.share &&
+      navigator.canShare &&
+      navigator.canShare({
+        files: [file]
+      })
+    ) {
+
+      try {
+
+        await navigator.share({
+          files: [file],
+          title:
+            "Soak in Ecstasy of Enlightenment with Sadhguru",
+          text:
+            "I am going! Jaipur — 10 January 2027"
+        });
+
+      }
+
+      catch (error) {
+
+        /*
+          User cancelled the share sheet.
+          Do not show an error for that.
+        */
+
+        if (
+          error.name !==
+          "AbortError"
+        ) {
+
+          console.error(
+            "Share failed:",
+            error
+          );
+
+        }
+
+      }
+
+      return;
+    }
+
+
+    /*
+      Fallback for browsers that don't
+      support sharing image files.
+    */
+
+    if (navigator.share) {
+
+      try {
+
+        await navigator.share({
+          title:
+            "Soak in Ecstasy of Enlightenment with Sadhguru",
+          text:
+            "I am going! Jaipur — 10 January 2027",
+          url:
+            window.location.href
+        });
+
+      }
+
+      catch (error) {
+
+        if (
+          error.name !==
+          "AbortError"
+        ) {
+
+          console.error(
+            "Share failed:",
+            error
+          );
+
+        }
+
+      }
+
+      return;
+    }
+
+
+    /*
+      Desktop / unsupported browser.
+    */
+
+    downloadMessage.textContent =
+      "Sharing is available on supported mobile devices.";
 
   }
 );
