@@ -9,18 +9,18 @@ const TEMPLATE_CONFIG = {
 
   photoArea: {
     // Bounding box of the transparent photo opening, as % of the square template.
-    left: 29.8,
-    top: 35.4,
-    width: 43.8,
-    height: 43.5,
+    left: 29.4,
+    top: 35.25,
+    width: 44.8,
+    height: 44.7,
 
     // Shape of the slightly tilted photo opening, relative to the bounding box.
     // These points let the photo follow the actual frame, not a plain square.
     clipPoints: [
-      [0, 1.3],
-      [95, 0],
-      [100, 91.1],
-      [3.9, 100]
+      [0, 1.0],
+      [96, 0],
+      [100, 94.5],
+      [3.5, 100]
     ]
   }
 };
@@ -65,10 +65,8 @@ const apertureClip = "polygon(" +
     .join(", ") +
   ")";
 
-// Let the photo fill the full inner-frame bounds. The template image is
-// layered above it, so the paper edge naturally masks any slight overlap.
-photoWindow.style.clipPath = "none";
-photoWindow.style.webkitClipPath = "none";
+// Clip the photo to the inner edge of the frame. It sits above the gray
+// placeholder/mat in the template, while the polygon keeps it off the paper.
 
 
 /* ==========================================
@@ -314,11 +312,20 @@ async function generateGraphic() {
   const photoDrawX = photoAreaCenterX - finalPhotoWidth / 2 + translatedX;
   const photoDrawY = photoAreaCenterY - finalPhotoHeight / 2 + translatedY;
 
-  // Fill the complete photo-window bounds. The template is drawn on top
-  // afterward, keeping the frame, paper edges, and tape in the foreground.
+  // Draw the template first, then cover the gray mat with the photo.
+  // The polygon follows the inner frame edge so the paper and tape remain visible.
+  ctx.drawImage(template, 0, 0, canvas.width, canvas.height);
+
   ctx.save();
   ctx.beginPath();
-  ctx.rect(photoAreaX, photoAreaY, photoAreaWidth, photoAreaHeight);
+  const points = TEMPLATE_CONFIG.photoArea.clipPoints;
+  points.forEach(function (point, index) {
+    const x = photoAreaX + photoAreaWidth * (point[0] / 100);
+    const y = photoAreaY + photoAreaHeight * (point[1] / 100);
+    if (index === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.closePath();
   ctx.clip();
 
   ctx.drawImage(
