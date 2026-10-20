@@ -19,11 +19,7 @@ body {
   text-align: center;
 }
 
-
-/* ==========================================
-   Header banner
-========================================== */
-
+/* Header banner */
 .header-banner {
   width: 100%;
   margin: 0 auto 24px;
@@ -36,11 +32,7 @@ body {
   border-radius: 0;
 }
 
-
-/* ==========================================
-   Main buttons
-========================================== */
-
+/* Buttons */
 button {
   padding: 14px 24px;
   border: none;
@@ -60,20 +52,14 @@ button:disabled {
   cursor: not-allowed;
 }
 
-
-/* ==========================================
-   Photo selection menu
-========================================== */
-
+/* Photo selection menu */
 .photo-choice {
-  width: min(100%, 320px);
-  margin: 12px auto 0;
-  padding: 12px;
-
   display: flex;
   flex-direction: column;
   gap: 8px;
-
+  width: min(100%, 320px);
+  margin: 12px auto 0;
+  padding: 12px;
   background: white;
   border: 1px solid #ddd;
   border-radius: 14px;
@@ -82,11 +68,9 @@ button:disabled {
 .photo-choice button {
   width: 100%;
   margin: 0;
-
+  border-radius: 10px;
   background: #f3f1ee;
   color: #222;
-
-  border-radius: 10px;
   font-size: 15px;
 }
 
@@ -95,101 +79,70 @@ button:disabled {
   color: white;
 }
 
-
-/* ==========================================
-   Artwork editor
-========================================== */
-
+/* Template editor and layer order */
 .editor {
   position: relative;
+  isolation: isolate;
   width: 100%;
   margin-top: 30px;
 }
 
 .template-image {
+  position: relative;
+  z-index: 2;
   display: block;
   width: 100%;
   height: auto;
+  pointer-events: none;
 }
 
-
-/* ==========================================
-   Photo window
-========================================== */
-
+/*
+  The photo sits UNDER the template.
+  The template PNG's transparent photo aperture
+  reveals the photo, while its frame and tape
+  remain visible above it.
+*/
 .photo-window {
   position: absolute;
-
-  /*
-    Position and width are controlled
-    by TEMPLATE_CONFIG in script.js.
-  */
-
-  aspect-ratio: 1 / 1;
-
+  z-index: 1;
   overflow: hidden;
-
   touch-action: none;
   cursor: grab;
 }
 
-
-/* ==========================================
-   Placeholder before photo upload
-========================================== */
-
+/* Placeholder visible through the transparent aperture */
 .photo-placeholder {
   position: absolute;
   inset: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   text-align: center;
-
-  color: rgba(255, 255, 255, 0.9);
+  padding: 8px;
+  color: rgba(255, 255, 255, 0.92);
   font-size: 14px;
-
-  background: rgba(0, 0, 0, 0.12);
-
+  background: rgba(90, 45, 22, 0.12);
   pointer-events: none;
 }
 
-
-/* ==========================================
-   User photo
-========================================== */
-
+/* User photo */
 #userPhoto {
   display: none;
-
   position: absolute;
-
   left: 50%;
   top: 50%;
-
   width: auto;
   height: auto;
-
   max-width: none;
   max-height: none;
-
   transform-origin: center center;
-
   user-select: none;
   -webkit-user-drag: none;
-
   pointer-events: none;
-
   will-change: transform;
 }
 
-
-/* ==========================================
-   Zoom control
-========================================== */
-
+/* Zoom control */
 .zoom-control {
   width: 100%;
   max-width: 320px;
@@ -199,7 +152,6 @@ button:disabled {
 .zoom-control label {
   display: block;
   margin-bottom: 8px;
-
   font-size: 14px;
   color: #555;
 }
@@ -208,92 +160,57 @@ button:disabled {
   width: 100%;
 }
 
-
-/* ==========================================
-   Helper text
-========================================== */
-
+/* Helper text */
 .helper-text {
   margin-top: 10px;
   margin-bottom: 18px;
-
   font-size: 13px;
   color: #666;
 }
 
-
-/* ==========================================
-   Action buttons
-========================================== */
-
+/* Download and Share */
 .action-buttons {
   display: flex;
   justify-content: center;
   align-items: stretch;
-
+  gap: 10px;
   width: 100%;
   max-width: 320px;
-
   margin: 4px auto 0;
-
-  gap: 10px;
 }
 
 .action-buttons button {
-  flex: 1;
+  flex: 1 1 0;
   width: 50%;
   min-width: 0;
-
   margin: 0;
 }
 
-
-/* ==========================================
-   Download button
-========================================== */
-
 .generate-button {
-  background: #222;
+  background: #442019;
 }
-
-
-/* ==========================================
-   Share button
-========================================== */
 
 .share-button {
   background: transparent;
-  color: #222;
-  border: 1px solid #222;
+  color: #442019;
+  border: 1px solid #442019;
 }
 
 .share-button:hover {
-  background: #222;
+  background: #442019;
   color: white;
 }
 
-
-/* ==========================================
-   Download / status message
-========================================== */
-
+/* Status message */
 .download-message {
   min-height: 20px;
-
-  margin-top: 12px;
-  margin-bottom: 0;
-
+  margin: 12px 0 0;
   font-size: 14px;
   color: #555;
 }
 
-
-/* ==========================================
-   Mobile
-========================================== */
-
+/* Mobile */
 @media (max-width: 600px) {
-
   .app {
     width: 94%;
     margin: 0 auto;
@@ -308,7 +225,7 @@ button:disabled {
   }
 
   .action-buttons button {
-    font-size: 15px;
     padding: 13px 16px;
+    font-size: 15px;
   }
 }
