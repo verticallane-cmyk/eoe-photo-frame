@@ -9,10 +9,10 @@ const TEMPLATE_CONFIG = {
 
   photoArea: {
     // Bounding box of the transparent photo opening, as % of the square template.
-    left: 30.14,
-    top: 35.885,
-    width: 43.06,
-    height: 42.90,
+    left: 29.8,
+    top: 35.4,
+    width: 43.8,
+    height: 43.5,
 
     // Shape of the slightly tilted photo opening, relative to the bounding box.
     // These points let the photo follow the actual frame, not a plain square.
@@ -65,8 +65,10 @@ const apertureClip = "polygon(" +
     .join(", ") +
   ")";
 
-photoWindow.style.clipPath = apertureClip;
-photoWindow.style.webkitClipPath = apertureClip;
+// Let the photo fill the full inner-frame bounds. The template image is
+// layered above it, so the paper edge naturally masks any slight overlap.
+photoWindow.style.clipPath = "none";
+photoWindow.style.webkitClipPath = "none";
 
 
 /* ==========================================
@@ -312,24 +314,11 @@ async function generateGraphic() {
   const photoDrawX = photoAreaCenterX - finalPhotoWidth / 2 + translatedX;
   const photoDrawY = photoAreaCenterY - finalPhotoHeight / 2 + translatedY;
 
-  // Clip to the same angled quadrilateral used by the live preview.
+  // Fill the complete photo-window bounds. The template is drawn on top
+  // afterward, keeping the frame, paper edges, and tape in the foreground.
   ctx.save();
   ctx.beginPath();
-
-  const points = TEMPLATE_CONFIG.photoArea.clipPoints;
-
-  points.forEach(function (point, index) {
-    const x = photoAreaX + photoAreaWidth * (point[0] / 100);
-    const y = photoAreaY + photoAreaHeight * (point[1] / 100);
-
-    if (index === 0) {
-      ctx.moveTo(x, y);
-    } else {
-      ctx.lineTo(x, y);
-    }
-  });
-
-  ctx.closePath();
+  ctx.rect(photoAreaX, photoAreaY, photoAreaWidth, photoAreaHeight);
   ctx.clip();
 
   ctx.drawImage(
