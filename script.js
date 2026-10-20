@@ -50,61 +50,18 @@ const downloadMessage = document.getElementById("downloadMessage");
    Apply template and photo-window configuration
 ========================================== */
 
-// Keep the original artwork for the final composite, and create a transparent
-// overlay by removing the gray photo mat from the frame artwork at runtime.
+// Keep the original template artwork intact. The user's photo is layered above
+// the artwork but clipped precisely to the inner photo opening. This reliably
+// covers the gray mat without hiding the paper frame or tape.
 const baseTemplateImage = new Image();
 baseTemplateImage.src = TEMPLATE_CONFIG.image;
-
-function prepareTransparentOverlay() {
-  if (!baseTemplateImage.complete || !baseTemplateImage.naturalWidth) return;
-  const overlayCanvas = document.createElement("canvas");
-  overlayCanvas.width = baseTemplateImage.naturalWidth;
-  overlayCanvas.height = baseTemplateImage.naturalHeight;
-  const overlayCtx = overlayCanvas.getContext("2d");
-  overlayCtx.drawImage(baseTemplateImage, 0, 0);
-
-  const aperture = TEMPLATE_CONFIG.photoArea;
-  const points = aperture.clipPoints;
-  const bleed = 2.5;
-  const overlayPoints = [
-    [points[0][0] - bleed, points[0][1] + bleed],
-    [points[1][0] + bleed, points[1][1] - bleed],
-    [points[2][0] + bleed, points[2][1] + bleed],
-    [points[3][0] - bleed, points[3][1] + bleed]
-  ];
-  overlayCtx.save();
-  overlayCtx.globalCompositeOperation = "destination-out";
-  overlayCtx.beginPath();
-  overlayPoints.forEach(function (point, index) {
-    const x = (aperture.left + aperture.width * point[0] / 100) * overlayCanvas.width / 100;
-    const y = (aperture.top + aperture.height * point[1] / 100) * overlayCanvas.height / 100;
-    if (index === 0) overlayCtx.moveTo(x, y);
-    else overlayCtx.lineTo(x, y);
-  });
-  overlayCtx.closePath();
-  overlayCtx.fill();
-  overlayCtx.restore();
-  templateImage.src = overlayCanvas.toDataURL("image/png");
-}
-
-// An Image can report complete=true before a source has finished loading
-// (or when it has no decoded dimensions). Only prepare immediately when the
-// actual image is ready; otherwise wait for its load event.
-if (baseTemplateImage.complete && baseTemplateImage.naturalWidth > 0) {
-  prepareTransparentOverlay();
-} else {
-  baseTemplateImage.addEventListener("load", prepareTransparentOverlay, { once: true });
-  baseTemplateImage.addEventListener("error", function () {
-    console.error("Unable to load the Dussehra template artwork.");
-  }, { once: true });
-}
 
 photoWindow.style.left = TEMPLATE_CONFIG.photoArea.left + "%";
 photoWindow.style.top = TEMPLATE_CONFIG.photoArea.top + "%";
 photoWindow.style.width = TEMPLATE_CONFIG.photoArea.width + "%";
 photoWindow.style.height = TEMPLATE_CONFIG.photoArea.height + "%";
 
-const previewBleed = 2.5;
+const previewBleed = 0;
 const previewPoints = [
   [TEMPLATE_CONFIG.photoArea.clipPoints[0][0] - previewBleed, TEMPLATE_CONFIG.photoArea.clipPoints[0][1] + previewBleed],
   [TEMPLATE_CONFIG.photoArea.clipPoints[1][0] + previewBleed, TEMPLATE_CONFIG.photoArea.clipPoints[1][1] - previewBleed],
@@ -119,8 +76,8 @@ const apertureClip = "polygon(" +
     .join(", ") +
   ")";
 
-// Clip the photo to the inner edge of the frame. It sits above the gray
-// placeholder/mat in the template, while the polygon keeps it off the paper.
+// Clip the photo to the exact inner opening. The photo sits above the template's
+// gray mat, while this polygon keeps it off the paper and tape.
 photoWindow.style.clipPath = apertureClip;
 photoWindow.style.webkitClipPath = apertureClip;
 
@@ -315,9 +272,9 @@ photoWindow.addEventListener("lostpointercapture", function () {
 
 /* ==========================================
    Generate final PNG
-   Draw photo FIRST, clipped to the aperture.
-   Draw the transparent template LAST so the
-   frame, torn paper, and tape sit ABOVE the photo.
+   Draw the template first, then the photo clipped
+   precisely to the inner aperture. The frame and tape
+   remain visible outside that clipped opening.
 ========================================== */
 
 async function generateGraphic() {
@@ -368,22 +325,15 @@ async function generateGraphic() {
   const photoDrawX = photoAreaCenterX - finalPhotoWidth / 2 + translatedX;
   const photoDrawY = photoAreaCenterY - finalPhotoHeight / 2 + translatedY;
 
-  // Composite in three layers: original artwork, photo extending under the frame,
-  // then the transparent frame/tape overlay created above.
+  // Start with the original artwork, then cover only the gray photo mat.
+  // Keeping the photo clipped to the inner opening prevents it from covering
+  // the surrounding paper frame or tape.
   ctx.drawImage(baseTemplateImage, 0, 0, canvas.width, canvas.height);
 
   ctx.save();
   ctx.beginPath();
   const points = TEMPLATE_CONFIG.photoArea.clipPoints;
-  // Extend the photo slightly beneath the paper edges to prevent gray seams.
-  const bleed = 2.5;
-  const expandedPoints = [
-    [points[0][0] - bleed, points[0][1] + bleed],
-    [points[1][0] + bleed, points[1][1] - bleed],
-    [points[2][0] + bleed, points[2][1] + bleed],
-    [points[3][0] - bleed, points[3][1] + bleed]
-  ];
-  expandedPoints.forEach(function (point, index) {
+  points.forEach(function (point, index) {
     const x = photoAreaX + photoAreaWidth * (point[0] / 100);
     const y = photoAreaY + photoAreaHeight * (point[1] / 100);
     if (index === 0) ctx.moveTo(x, y);
@@ -401,9 +351,6 @@ async function generateGraphic() {
   );
 
   ctx.restore();
-
-  // Paint the prepared transparent overlay last so the paper frame and tape sit above the photo.
-  ctx.drawImage(template, 0, 0, canvas.width, canvas.height);
 
   return new Promise(function (resolve, reject) {
     canvas.toBlob(function (blob) {
