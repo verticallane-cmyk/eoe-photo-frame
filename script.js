@@ -50,7 +50,38 @@ const downloadMessage = document.getElementById("downloadMessage");
    Apply template and photo-window configuration
 ========================================== */
 
-templateImage.src = TEMPLATE_CONFIG.image;
+// Keep the original artwork for the final composite, and create a transparent
+// overlay by removing the gray photo mat from the frame artwork at runtime.
+const baseTemplateImage = new Image();
+baseTemplateImage.src = TEMPLATE_CONFIG.image;
+
+function prepareTransparentOverlay() {
+  if (!baseTemplateImage.complete || !baseTemplateImage.naturalWidth) return;
+  const overlayCanvas = document.createElement("canvas");
+  overlayCanvas.width = baseTemplateImage.naturalWidth;
+  overlayCanvas.height = baseTemplateImage.naturalHeight;
+  const overlayCtx = overlayCanvas.getContext("2d");
+  overlayCtx.drawImage(baseTemplateImage, 0, 0);
+
+  const aperture = TEMPLATE_CONFIG.photoArea;
+  const points = aperture.clipPoints;
+  overlayCtx.save();
+  overlayCtx.globalCompositeOperation = "destination-out";
+  overlayCtx.beginPath();
+  points.forEach(function (point, index) {
+    const x = (aperture.left + aperture.width * point[0] / 100) * overlayCanvas.width / 100;
+    const y = (aperture.top + aperture.height * point[1] / 100) * overlayCanvas.height / 100;
+    if (index === 0) overlayCtx.moveTo(x, y);
+    else overlayCtx.lineTo(x, y);
+  });
+  overlayCtx.closePath();
+  overlayCtx.fill();
+  overlayCtx.restore();
+  templateImage.src = overlayCanvas.toDataURL("image/png");
+}
+
+if (baseTemplateImage.complete) prepareTransparentOverlay();
+else baseTemplateImage.addEventListener("load", prepareTransparentOverlay, { once: true });
 
 photoWindow.style.left = TEMPLATE_CONFIG.photoArea.left + "%";
 photoWindow.style.top = TEMPLATE_CONFIG.photoArea.top + "%";
@@ -314,14 +345,22 @@ async function generateGraphic() {
   const photoDrawX = photoAreaCenterX - finalPhotoWidth / 2 + translatedX;
   const photoDrawY = photoAreaCenterY - finalPhotoHeight / 2 + translatedY;
 
-  // Draw the template first, then cover the gray mat with the photo.
-  // The polygon follows the inner frame edge so the paper and tape remain visible.
-  ctx.drawImage(template, 0, 0, canvas.width, canvas.height);
+  // Composite in three layers: original artwork, photo extending under the frame,
+  // then the transparent frame/tape overlay created above.
+  ctx.drawImage(baseTemplateImage, 0, 0, canvas.width, canvas.height);
 
   ctx.save();
   ctx.beginPath();
   const points = TEMPLATE_CONFIG.photoArea.clipPoints;
-  points.forEach(function (point, index) {
+  // Extend the photo slightly beneath the paper edges to prevent gray seams.
+  const bleed = 2.5;
+  const expandedPoints = [
+    [points[0][0] - bleed, points[0][1] + bleed],
+    [points[1][0] + bleed, points[1][1] - bleed],
+    [points[2][0] + bleed, points[2][1] + bleed],
+    [points[3][0] - bleed, points[3][1] + bleed]
+  ];
+  expandedPoints.forEach(function (point, index) {
     const x = photoAreaX + photoAreaWidth * (point[0] / 100);
     const y = photoAreaY + photoAreaHeight * (point[1] / 100);
     if (index === 0) ctx.moveTo(x, y);
@@ -340,7 +379,7 @@ async function generateGraphic() {
 
   ctx.restore();
 
-  // Paint the transparent template on top: all paper edges and tape stay in front.
+  // Paint the prepared transparent overlay last so the paper frame and tape sit above the photo.
   ctx.drawImage(template, 0, 0, canvas.width, canvas.height);
 
   return new Promise(function (resolve, reject) {
