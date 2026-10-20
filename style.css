@@ -97,14 +97,13 @@ button:disabled {
 }
 
 /*
-  The photo sits UNDER the template.
-  The template PNG's transparent photo aperture
-  reveals the photo, while its frame and tape
-  remain visible above it.
+  The photo sits above the template but is clipped to the exact
+  inner aperture, so it covers the gray mat without covering the
+  surrounding paper frame or tape.
 */
 .photo-window {
   position: absolute;
-  z-index: 1;
+  z-index: 3;
   overflow: hidden;
   touch-action: none;
   cursor: grab;
