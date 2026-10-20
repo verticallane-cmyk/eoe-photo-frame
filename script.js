@@ -67,6 +67,8 @@ const apertureClip = "polygon(" +
 
 // Clip the photo to the inner edge of the frame. It sits above the gray
 // placeholder/mat in the template, while the polygon keeps it off the paper.
+photoWindow.style.clipPath = apertureClip;
+photoWindow.style.webkitClipPath = apertureClip;
 
 
 /* ==========================================
