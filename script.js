@@ -65,10 +65,17 @@ function prepareTransparentOverlay() {
 
   const aperture = TEMPLATE_CONFIG.photoArea;
   const points = aperture.clipPoints;
+  const bleed = 2.5;
+  const overlayPoints = [
+    [points[0][0] - bleed, points[0][1] + bleed],
+    [points[1][0] + bleed, points[1][1] - bleed],
+    [points[2][0] + bleed, points[2][1] + bleed],
+    [points[3][0] - bleed, points[3][1] + bleed]
+  ];
   overlayCtx.save();
   overlayCtx.globalCompositeOperation = "destination-out";
   overlayCtx.beginPath();
-  points.forEach(function (point, index) {
+  overlayPoints.forEach(function (point, index) {
     const x = (aperture.left + aperture.width * point[0] / 100) * overlayCanvas.width / 100;
     const y = (aperture.top + aperture.height * point[1] / 100) * overlayCanvas.height / 100;
     if (index === 0) overlayCtx.moveTo(x, y);
@@ -88,8 +95,15 @@ photoWindow.style.top = TEMPLATE_CONFIG.photoArea.top + "%";
 photoWindow.style.width = TEMPLATE_CONFIG.photoArea.width + "%";
 photoWindow.style.height = TEMPLATE_CONFIG.photoArea.height + "%";
 
+const previewBleed = 2.5;
+const previewPoints = [
+  [TEMPLATE_CONFIG.photoArea.clipPoints[0][0] - previewBleed, TEMPLATE_CONFIG.photoArea.clipPoints[0][1] + previewBleed],
+  [TEMPLATE_CONFIG.photoArea.clipPoints[1][0] + previewBleed, TEMPLATE_CONFIG.photoArea.clipPoints[1][1] - previewBleed],
+  [TEMPLATE_CONFIG.photoArea.clipPoints[2][0] + previewBleed, TEMPLATE_CONFIG.photoArea.clipPoints[2][1] + previewBleed],
+  [TEMPLATE_CONFIG.photoArea.clipPoints[3][0] - previewBleed, TEMPLATE_CONFIG.photoArea.clipPoints[3][1] + previewBleed]
+];
 const apertureClip = "polygon(" +
-  TEMPLATE_CONFIG.photoArea.clipPoints
+  previewPoints
     .map(function (point) {
       return point[0] + "% " + point[1] + "%";
     })
