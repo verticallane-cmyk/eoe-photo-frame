@@ -87,8 +87,17 @@ function prepareTransparentOverlay() {
   templateImage.src = overlayCanvas.toDataURL("image/png");
 }
 
-if (baseTemplateImage.complete) prepareTransparentOverlay();
-else baseTemplateImage.addEventListener("load", prepareTransparentOverlay, { once: true });
+// An Image can report complete=true before a source has finished loading
+// (or when it has no decoded dimensions). Only prepare immediately when the
+// actual image is ready; otherwise wait for its load event.
+if (baseTemplateImage.complete && baseTemplateImage.naturalWidth > 0) {
+  prepareTransparentOverlay();
+} else {
+  baseTemplateImage.addEventListener("load", prepareTransparentOverlay, { once: true });
+  baseTemplateImage.addEventListener("error", function () {
+    console.error("Unable to load the Dussehra template artwork.");
+  }, { once: true });
+}
 
 photoWindow.style.left = TEMPLATE_CONFIG.photoArea.left + "%";
 photoWindow.style.top = TEMPLATE_CONFIG.photoArea.top + "%";
