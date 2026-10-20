@@ -2,221 +2,78 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="theme-color" content="#351a16">
+  <title>EoE Photo Frame — Happy Dussehra</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
-  >
+  <meta property="og:title" content="Soak in Ecstasy of Enlightenment with Sadhguru">
+  <meta property="og:description" content="Create your own EoE photo frame for Sadhguru in Jaipur.">
+  <meta property="og:image" content="https://eoe-photo-frame.vercel.app/assets/social-media-official.jpg">
+  <meta property="og:image:width" content="768">
+  <meta property="og:image:height" content="1024">
+  <meta property="og:type" content="website">
 
-  <title>EoE Photo Frame</title>
-  
-  <head>
-
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
-  >
-
-  <title>EoE Photo Frame</title>
-
-  <meta
-    property="og:title"
-    content="Soak in Ecstasy of Enlightenment with Sadhguru"
-  >
-
-  <meta
-    property="og:description"
-    content="Create your own EoE photo frame for the Jaipur event."
-  >
-
-  <meta
-    property="og:image"
-    content="https://eoe-photo-frame.vercel.app/assets/social-media-official.jpg"
-  >
-
-  <meta
-    property="og:image:width"
-    content="1200"
-  >
-
-  <meta
-    property="og:image:height"
-    content="300"
-  >
-
-  <meta
-    property="og:type"
-    content="website"
-  >
-
-  <meta
-    name="twitter:card"
-    content="summary_large_image"
-  >
-
-  <meta
-    name="twitter:title"
-    content="Soak in Ecstasy of Enlightenment with Sadhguru"
-  >
-
-  <meta
-    name="twitter:description"
-    content="Create your own EoE photo frame for the Jaipur event."
-  >
-
-  <meta
-    name="twitter:image"
-    content="https://eoe-photo-frame.vercel.app/assets/social-media-official.jpg"
-  >
-
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
-
-</head>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Soak in Ecstasy of Enlightenment with Sadhguru">
+  <meta name="twitter:description" content="Create your own EoE photo frame for Sadhguru in Jaipur.">
+  <meta name="twitter:image" content="https://eoe-photo-frame.vercel.app/assets/social-media-official.jpg">
 
   <link rel="stylesheet" href="style.css">
-</head>
 
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
+</head>
 
 <body>
-
   <main class="app">
-
-<div class="header-banner">
-  <img
-    src="assets/header.png"
-    alt="Soak in Ecstasy of Enlightenment with Sadhguru — Create Your Own Photo Frame"
-  >
-</div>
-
-    <button id="photoButton">
-  Add Your Photo
-</button>
-
-<div
-  class="photo-choice"
-  id="photoChoice"
-  hidden
->
-  <button
-    type="button"
-    id="cameraButton"
-  >
-    Take a Photo
-  </button>
-
-  <button
-    type="button"
-    id="galleryButton"
-  >
-    Choose from Gallery
-  </button>
-</div>
-
-<input
-  type="file"
-  id="cameraInput"
-  accept="image/*"
-  capture="user"
-  hidden
->
-
-<input
-  type="file"
-  id="galleryInput"
-  accept="image/*"
-  hidden
->
-
-    <div class="editor">
-
-      <!-- Your original artwork -->
+    <div class="header-banner">
       <img
-        src="assets/eoe-template.png"
-        alt="EoE Jaipur graphic"
+        src="assets/header.png"
+        alt="Soak in Ecstasy of Enlightenment with Sadhguru — Create Your Own Photo Frame"
+      >
+    </div>
+
+    <button id="photoButton" type="button">Add Your Photo</button>
+
+    <div class="photo-choice" id="photoChoice" hidden>
+      <button type="button" id="cameraButton">Take a Photo</button>
+      <button type="button" id="galleryButton">Choose from Gallery</button>
+    </div>
+
+    <input type="file" id="cameraInput" accept="image/*" capture="user" hidden>
+    <input type="file" id="galleryInput" accept="image/*" hidden>
+
+    <div class="editor" id="editor">
+      <div class="photo-window" id="photoWindow">
+        <div class="photo-placeholder" id="photoPlaceholder">Add Your Photo</div>
+        <img id="userPhoto" alt="Your photo">
+      </div>
+
+      <img
+        src="assets/eoe-dussehra-template.png"
+        alt="Happy Dussehra — Sadhguru in Jaipur photo frame"
         class="template-image"
         id="templateImage"
       >
-
-      <!-- Circular photo area -->
-      <div
-        class="photo-window"
-        id="photoWindow"
-      >
-
-        <div
-          class="photo-placeholder"
-          id="photoPlaceholder"
-        >
-          Add Your Photo
-        </div>
-
-        <img
-          id="userPhoto"
-          alt="Your photo"
-        >
-
-      </div>
-
     </div>
 
     <div class="zoom-control">
-
-      <label for="zoomSlider">
-        Adjust photo
-      </label>
-
-      <input
-        type="range"
-        id="zoomSlider"
-        min="1"
-        max="3"
-        step="0.01"
-        value="1"
-      >
-
+      <label for="zoomSlider">Adjust photo</label>
+      <input type="range" id="zoomSlider" min="1" max="3" step="0.01" value="1">
     </div>
 
-    <p class="helper-text">
-      Drag your photo to adjust
-    </p>
+    <p class="helper-text">Drag your photo to adjust</p>
 
     <div class="action-buttons">
+      <button id="generateButton" class="generate-button" type="button" disabled>Download</button>
+      <button id="shareButton" class="share-button" type="button" disabled>Share</button>
+    </div>
 
-  <button
-    id="generateButton"
-    class="generate-button"
-    disabled
-  >
-    Download
-  </button>
-
-  <button
-    id="shareButton"
-    class="share-button"
-    disabled
-  >
-    Share
-  </button>
-
-</div>
-
-    <p
-      id="downloadMessage"
-      class="download-message"
-    ></p>
-
+    <p id="downloadMessage" class="download-message" role="status" aria-live="polite"></p>
   </main>
 
   <script src="script.js"></script>
-
 </body>
 </html>
